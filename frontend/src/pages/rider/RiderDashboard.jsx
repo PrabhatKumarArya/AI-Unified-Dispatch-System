@@ -1,7 +1,7 @@
-export default function AdminDashboard() {
+export default function RiderDashboard() {
   return (
     <h1 className="text-4xl font-bold">
-      Admin Dashboard
+      Rider Dashboard
     </h1>
   );
 }

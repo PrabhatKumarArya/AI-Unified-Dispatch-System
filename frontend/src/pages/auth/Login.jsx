@@ -1,3 +1,13 @@
-export default function Home() {
-  return <h1>Home Page</h1>;
+import AuthLayout from "../../components/auth/AuthLayout";
+import LoginForm from "../../components/auth/LoginForm";
+
+export default function Login() {
+  return (
+    <AuthLayout
+      title="Welcome Back 👋"
+      subtitle="Sign in to continue to your dashboard."
+    >
+      <LoginForm />
+    </AuthLayout>
+  );
 }
