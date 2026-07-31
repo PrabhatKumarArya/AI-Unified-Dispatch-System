@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
     <section id="home" className="bg-slate-50">
       <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
@@ -22,7 +26,10 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-4 mt-8">
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700">
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition"
+            >
               Get Started
             </button>
 

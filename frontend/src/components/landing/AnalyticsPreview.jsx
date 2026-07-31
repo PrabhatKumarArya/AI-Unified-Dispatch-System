@@ -119,7 +119,7 @@ export default function AnalyticsPreview() {
 
             {/* Right */}
 
-            <div className="bg-slate-800 rounded-2xl flex items-center justify-center min-h-[250px]">
+            <div className="bg-slate-800 rounded-2xl flex items-center justify-center min-h-">
 
               <h3 className="text-white text-2xl font-bold">
                 🗺️ Live Dispatch Map

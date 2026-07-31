@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 
 import InputField from "./InputField";
 import PasswordInput from "./PasswordInput";
+import { registerUser } from "../../services/authService";
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -14,6 +17,8 @@ export default function RegisterForm() {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   function handleChange(e) {
     setFormData({
       ...formData,
@@ -21,10 +26,56 @@ export default function RegisterForm() {
     });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    console.log(formData);
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const data = await registerUser({
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        role: formData.role,
+        password: formData.password,
+      });
+
+      if (data.message) {
+        alert(data.message);
+      }
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data));
+
+        switch (data.role) {
+          case "customer":
+            navigate("/customer/dashboard");
+            break;
+
+          case "rider":
+            navigate("/rider/dashboard");
+            break;
+
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+
+          default:
+            navigate("/");
+        }
+      }
+    } catch (err) {
+      alert("Registration Failed");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -99,9 +150,10 @@ export default function RegisterForm() {
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700"
+        disabled={loading}
+        className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 disabled:bg-slate-400"
       >
-        Create Account
+        {loading ? "Creating Account..." : "Create Account"}
       </button>
 
       <p className="text-center">
