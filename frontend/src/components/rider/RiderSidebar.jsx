@@ -52,7 +52,7 @@ export default function RiderSidebar() {
   };
 
   return (
-    <aside className="w-72 bg-slate-900 text-white flex flex-col">
+    <aside style={{ width: "260px", minWidth: "260px", background: "#0f172a", color: "#fff", display: "flex", flexDirection: "column", minHeight: "100vh" }}>
 
       <div className="p-6 border-b border-slate-700">
         <h1 className="text-2xl font-bold">
