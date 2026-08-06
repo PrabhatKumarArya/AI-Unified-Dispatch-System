@@ -4,15 +4,12 @@ import AdminNavbar from "../components/admin/AdminNavbar";
 
 export default function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-slate-100">
-
+    <div style={{ display: "flex", minHeight: "100vh", width: "100%", background: "#f1f5f9" }}>
       <AdminSidebar />
-
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main style={{ flex: 1, padding: "2rem", overflowY: "auto", minWidth: 0 }}>
         <AdminNavbar />
         <Outlet />
       </main>
-
     </div>
   );
 }

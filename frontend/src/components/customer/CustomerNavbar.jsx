@@ -1,85 +1,50 @@
-import { FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaSearch, FaUserCircle, FaPlusCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { getStoredUser } from "../../utils/helpers";
 
 export default function CustomerNavbar() {
-  const hour = new Date().getHours();
-
-  const greeting =
-    hour < 12
-      ? "Good Morning"
-      : hour < 17
-      ? "Good Afternoon"
-      : "Good Evening";
-
-  const today = new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const user = getStoredUser();
 
   return (
-    <div className="bg-white rounded-2xl shadow-md px-8 py-5 flex items-center justify-between">
-
-      {/* Left Section */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-800">
-          {greeting}, Prabhat 👋
-        </h1>
-
-        <p className="text-slate-500 mt-1">
-          {today}
-        </p>
+    <header className="bg-white rounded-2xl shadow-sm px-6 py-4 mb-8 flex items-center justify-between gap-4">
+      {/* Search */}
+      <div className="relative hidden md:block flex-1 max-w-xs">
+        <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+        <input
+          type="text"
+          placeholder="Track an order..."
+          className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50"
+        />
       </div>
 
-      {/* Right Section */}
-      <div className="flex items-center gap-6">
-
-        {/* Search */}
-        <div className="hidden lg:flex items-center bg-slate-100 rounded-xl px-4 py-2 w-72">
-          <FaSearch className="text-slate-500" />
-
-          <input
-            type="text"
-            placeholder="Search orders..."
-            className="bg-transparent outline-none ml-3 w-full"
-          />
-        </div>
+      {/* Right */}
+      <div className="flex items-center gap-3 ml-auto">
+        {/* Create order CTA */}
+        <Link
+          to="/customer/create-order"
+          className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
+        >
+          <FaPlusCircle size={14} />
+          New Order
+        </Link>
 
         {/* Notifications */}
-        <div className="relative cursor-pointer">
-          <FaBell
-            size={22}
-            className="text-slate-700 hover:text-blue-600 transition"
-          />
-
-          <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
-            3
-          </span>
-        </div>
+        <button className="relative p-2 hover:bg-slate-100 rounded-xl transition">
+          <FaBell className="text-slate-600" size={17} />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+        </button>
 
         {/* User */}
-        <div className="flex items-center gap-3 cursor-pointer">
-
-          <FaUserCircle
-            size={40}
-            className="text-blue-600"
-          />
-
-          <div className="hidden md:block">
-            <h3 className="font-semibold text-slate-800">
-              Prabhat
-            </h3>
-
-            <p className="text-sm text-slate-500">
-              Customer
+        <div className="flex items-center gap-2.5 bg-slate-50 px-3 py-2 rounded-xl">
+          <FaUserCircle size={22} className="text-blue-600" />
+          <div className="hidden sm:block">
+            <p className="text-sm font-semibold text-slate-700 leading-tight">
+              {user?.name || "Customer"}
             </p>
+            <p className="text-xs text-slate-400">Customer</p>
           </div>
-
         </div>
-
       </div>
-      
-    </div>
-    
+    </header>
   );
 }
