@@ -81,12 +81,7 @@ export default function LoginForm() {
           Remember Me
         </label>
 
-        <button
-          type="button"
-          className="text-blue-600 hover:underline"
-        >
-          Forgot Password?
-        </button>
+        <Link to="/forgot-password" className="text-blue-600 hover:underline" > Forgot Password? </Link>
 
       </div>
 

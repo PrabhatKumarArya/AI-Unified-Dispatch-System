@@ -1,33 +1,73 @@
-export default function RiderPerformance() {
-  const stats = [
-    { label: "On-Time Delivery", value: "98%" },
-    { label: "Acceptance Rate", value: "96%" },
-    { label: "Average Rating", value: "4.9⭐" },
-    { label: "Completed Orders", value: "532" },
-  ];
+export default function RiderPerformance({
+    orders = [],
+    completedOrders = [],
+}) {
 
-  return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h2 className="text-2xl font-bold mb-6">
-        Performance Summary
-      </h2>
+    const totalOrders =
+        orders.length;
 
-      <div className="grid grid-cols-2 gap-6">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-slate-100 rounded-xl p-5 text-center"
-          >
-            <h3 className="text-3xl font-bold text-blue-600">
-              {stat.value}
-            </h3>
+    const completed =
+        completedOrders.length;
 
-            <p className="text-slate-600 mt-2">
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    const completionRate =
+        totalOrders > 0
+            ? Math.round(
+                  (completed /
+                      totalOrders) *
+                      100
+              )
+            : 0;
+
+
+    return (
+        <div className="bg-white rounded-2xl shadow p-6">
+
+            <h2 className="text-2xl font-bold mb-6">
+                Rider Performance
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-6">
+
+                <div className="bg-blue-50 rounded-xl p-5">
+
+                    <p className="text-slate-500">
+                        Total Orders
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-blue-600 mt-2">
+                        {totalOrders}
+                    </h2>
+
+                </div>
+
+
+                <div className="bg-green-50 rounded-xl p-5">
+
+                    <p className="text-slate-500">
+                        Completed
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-green-600 mt-2">
+                        {completed}
+                    </h2>
+
+                </div>
+
+
+                <div className="bg-purple-50 rounded-xl p-5">
+
+                    <p className="text-slate-500">
+                        Completion Rate
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-purple-600 mt-2">
+                        {completionRate}%
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+    );
 }

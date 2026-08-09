@@ -1,56 +1,67 @@
-const deliveries = [
-  {
-    id: "#1024",
-    customer: "Prabhat",
-    location: "Near DB Mall",
-    destination: "IIIT Bhopal",
-    eta: "12 min",
-    progress: 70,
-  },
-  {
-    id: "#1025",
-    customer: "Rahul",
-    location: "MP Nagar",
-    destination: "Ashoka Garden",
-    eta: "18 min",
-    progress: 45,
-  },
-];
+export default function LiveDeliveryStatus({
+    order,
+}) {
+    return (
+        <div className="bg-white rounded-2xl shadow p-6">
 
-export default function LiveDeliveryStatus() {
-  return (
-    <div className="bg-white rounded-2xl shadow p-6">
+            <h2 className="text-2xl font-bold mb-6">
+                Live Delivery Status
+            </h2>
 
-      <h2 className="text-2xl font-bold mb-6">
-        Live Delivery Status
-      </h2>
+            {!order ? (
 
-      {deliveries.map((item) => (
-        <div
-          key={item.id}
-          className="border rounded-xl p-5 mb-5"
-        >
-          <h3 className="font-bold text-lg">
-            {item.id}
-          </h3>
+                <div className="border rounded-xl p-6 text-center">
 
-          <p><strong>Customer:</strong> {item.customer}</p>
-          <p><strong>Current Location:</strong> {item.location}</p>
-          <p><strong>Destination:</strong> {item.destination}</p>
-          <p><strong>ETA:</strong> {item.eta}</p>
+                    <p className="text-slate-500">
+                        No active delivery.
+                    </p>
 
-          <div className="w-full bg-slate-200 rounded-full h-3 mt-4">
-            <div
-              className="bg-green-500 h-3 rounded-full"
-              style={{ width: `${item.progress}%` }}
-            />
-          </div>
+                </div>
 
-          <p className="text-sm text-slate-500 mt-2">
-            {item.progress}% Completed
-          </p>
+            ) : (
+
+                <div>
+
+                    <div className="flex items-center justify-between">
+
+                        <div>
+
+                            <p className="text-sm text-slate-500">
+                                Order
+                            </p>
+
+                            <h3 className="font-bold">
+                                #{order._id.slice(-6)}
+                            </h3>
+
+                        </div>
+
+                        <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl font-medium">
+                            {order.orderStatus}
+                        </span>
+
+                    </div>
+
+
+                    <div className="mt-6">
+
+                        <p className="text-sm text-slate-500">
+                            Latest Update
+                        </p>
+
+                        <p className="font-medium mt-1">
+                            {order.tracking?.[
+                                order.tracking.length - 1
+                            ]?.message ||
+                                "No tracking information"}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            )}
+
         </div>
-      ))}
-    </div>
-  );
+    );
 }

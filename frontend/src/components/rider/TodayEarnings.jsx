@@ -1,19 +1,30 @@
-export default function TodayEarnings() {
-  return (
-    <div className="bg-white rounded-2xl shadow p-6">
+export default function TodayEarnings({
+    orders = [],
+    earnings = 0,
+}) {
+    return (
+        <div className="bg-white rounded-2xl shadow p-6">
 
-      <h2 className="text-2xl font-bold mb-4">
-        Today's Earnings
-      </h2>
+            <h2 className="text-2xl font-bold">
+                Today's Earnings
+            </h2>
 
-      <h1 className="text-5xl font-bold text-green-600">
-        ₹820
-      </h1>
+            <p className="text-slate-500 mt-1">
+                Earnings from completed deliveries.
+            </p>
 
-      <p className="text-slate-500 mt-4">
-        8 Deliveries Completed
-      </p>
+            <div className="mt-8">
 
-    </div>
-  );
+                <p className="text-4xl font-bold text-green-600">
+                    ₹{earnings}
+                </p>
+
+                <p className="text-slate-500 mt-2">
+                    {orders.length} completed deliveries
+                </p>
+
+            </div>
+
+        </div>
+    );
 }

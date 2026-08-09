@@ -1,40 +1,127 @@
+import { useEffect, useState } from "react";
+
 import StatCard from "../../components/customer/StatCard";
 import RecentOrders from "../../components/customer/RecentOrders";
 import AIRecommendation from "../../components/customer/AIRecommendation";
 import LiveOrderStatus from "../../components/customer/LiveOrderStatus";
-import DeliveryAnalytics from "../../components/customer/DeliveryAnalytics";
+
+import { getOrders } from "../../services/orderService";
 
 export default function CustomerDashboard() {
-  return (
-    <>
-      {/* Stats */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-        <StatCard title="Total Orders" value="24" color="text-blue-600" />
-        <StatCard title="Active Orders" value="5" color="text-green-600" />
-        <StatCard title="Average ETA" value="18 min" color="text-orange-500" />
-        <StatCard title="Money Saved" value="₹240" color="text-purple-600" />
-      </section>
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-      {/* Orders + AI */}
-      <section className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-10">
-        <div className="xl:col-span-2">
-          <RecentOrders />
-        </div>
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getOrders();
 
-        <div>
-          <AIRecommendation />
-        </div>
-      </section>
+                console.log("Customer orders:", data);
 
-      {/* Live Order Status */}
-      <section className="mt-10">
-        <LiveOrderStatus />
-      </section>
+                if (Array.isArray(data.orders)) {
+                    setOrders(data.orders);
+                } else {
+                    throw new Error("Invalid orders data received");
+                }
+            } catch (err) {
+                console.error("Failed to fetch orders:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-      {/* Analytics */}
-      <section className="mt-10">
-        <DeliveryAnalytics />
-      </section>
-    </>
-  );
+        fetchOrders();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-6">
+                <p className="text-slate-500">
+                    Loading dashboard...
+                </p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-6">
+                <p className="text-red-600">
+                    Failed to load dashboard: {error}
+                </p>
+            </div>
+        );
+    }
+
+    const totalOrders = orders.length;
+
+    const activeOrders = orders.filter((order) => {
+        const status = (
+            order.orderStatus ||
+            order.status ||
+            ""
+        ).toLowerCase();
+
+        return (
+            status === "pending" ||
+            status === "on route" ||
+            status === "processing"
+        );
+    }).length;
+
+    const deliveredOrders = orders.filter((order) => {
+        const status = (
+            order.orderStatus ||
+            order.status ||
+            ""
+        ).toLowerCase();
+
+        return status === "delivered";
+    }).length;
+
+    return (
+        <>
+
+            {/* Stats */}
+            <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <StatCard
+                    title="Total Orders"
+                    value={totalOrders}
+                />
+
+                <StatCard
+                    title="Active Orders"
+                    value={activeOrders}
+                />
+
+                <StatCard
+                    title="Delivered Orders"
+                    value={deliveredOrders}
+                />
+
+            </section>
+
+            {/* Orders + AI */}
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10 items-start">
+
+                <div className="w-full min-w-0">
+                    <RecentOrders orders={orders} />
+                </div>
+
+                <div className="w-full min-w-0">
+                    <AIRecommendation />
+                </div>
+
+            </section>
+
+            {/* Live Order Status */}
+            <section className="mt-10">
+                <LiveOrderStatus orders={orders} />
+            </section>
+
+        </>
+    );
 }

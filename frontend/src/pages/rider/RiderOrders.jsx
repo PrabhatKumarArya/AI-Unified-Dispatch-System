@@ -1,79 +1,267 @@
-const orders = [
-  {
-    id: "#1024",
-    customer: "Prabhat",
-    address: "IIIT Bhopal",
-    status: "Out for Delivery",
-    eta: "12 min",
-  },
-  {
-    id: "#1025",
-    customer: "Rahul",
-    address: "Ashoka Garden",
-    status: "Picked Up",
-    eta: "18 min",
-  },
-  {
-    id: "#1026",
-    customer: "Anjali",
-    address: "MP Nagar",
-    status: "Assigned",
-    eta: "25 min",
-  },
-];
+import { useEffect, useState } from "react";
+import { getOrders } from "../../services/orderService";
 
 export default function RiderOrders() {
-  return (
-    <div className="mt-8">
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-      <h1 className="text-3xl font-bold">
-        Assigned Orders
-      </h1>
+    useEffect(() => {
+        fetchOrders();
 
-      <p className="text-slate-500 mt-2">
-        Manage today's delivery tasks.
-      </p>
+        // Refresh live orders every 15 seconds
+        const interval = setInterval(() => {
+            fetchOrders();
+        }, 15000);
 
-      <div className="bg-white rounded-2xl shadow mt-8 overflow-hidden">
+        return () => clearInterval(interval);
+    }, []);
 
-        <table className="w-full">
+    const fetchOrders = async () => {
+        try {
+            setLoading(true);
+            setError("");
 
-          <thead className="bg-slate-100">
+            const data = await getOrders();
 
-            <tr>
-              <th className="p-4 text-left">Order</th>
-              <th className="p-4 text-left">Customer</th>
-              <th className="p-4 text-left">Address</th>
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-left">ETA</th>
-            </tr>
+            console.log("Rider Orders:", data);
 
-          </thead>
+            setOrders(
+                Array.isArray(data.orders)
+                    ? data.orders
+                    : []
+            );
+        } catch (error) {
+            console.error(
+                "Rider Orders Fetch Error:",
+                error
+            );
 
-          <tbody>
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            {orders.map((order) => (
-              <tr key={order.id} className="border-t">
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case "Assigned":
+                return "bg-blue-100 text-blue-700";
 
-                <td className="p-4">{order.id}</td>
-                <td className="p-4">{order.customer}</td>
-                <td className="p-4">{order.address}</td>
-                <td className="p-4">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                    {order.status}
-                  </span>
-                </td>
-                <td className="p-4">{order.eta}</td>
+            case "Confirmed":
+                return "bg-purple-100 text-purple-700";
 
-              </tr>
-            ))}
+            case "Picked Up":
+                return "bg-yellow-100 text-yellow-700";
 
-          </tbody>
+            case "Out for Delivery":
+                return "bg-orange-100 text-orange-700";
 
-        </table>
+            case "Delivered":
+                return "bg-green-100 text-green-700";
 
-      </div>
+            default:
+                return "bg-slate-100 text-slate-700";
+        }
+    };
 
-    </div>
-  );
+    if (loading) {
+        return (
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Assigned Orders
+                </h1>
+
+                <p className="text-slate-500 mt-2">
+                    Manage today's delivery tasks.
+                </p>
+
+                <div className="bg-white rounded-2xl shadow mt-8 p-8 text-center">
+                    <p className="text-slate-500">
+                        Loading assigned orders...
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Assigned Orders
+                </h1>
+
+                <p className="text-slate-500 mt-2">
+                    Manage today's delivery tasks.
+                </p>
+
+                <div className="bg-white rounded-2xl shadow mt-8 p-8">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+                        <p className="text-red-600">
+                            {error}
+                        </p>
+
+                        <button
+                            onClick={fetchOrders}
+                            className="mt-3 text-blue-600 font-medium hover:underline"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            {/* Header */}
+
+            <div className="flex items-center justify-between">
+
+                <div>
+                    <h1 className="text-3xl font-bold">
+                        Assigned Orders
+                    </h1>
+
+                    <p className="text-slate-500 mt-2">
+                        Manage today's delivery tasks.
+                    </p>
+                </div>
+
+                <span className="bg-blue-100 text-blue-600 px-4 py-2 rounded-xl font-semibold">
+                    {orders.length} Orders
+                </span>
+
+            </div>
+
+
+            {/* Orders */}
+
+            <div className="bg-white rounded-2xl shadow mt-8 overflow-hidden">
+
+                {orders.length === 0 ? (
+
+                    <div className="p-10 text-center">
+
+                        <p className="text-slate-500">
+                            No orders have been assigned to you.
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="overflow-x-auto">
+
+                        <table className="w-full">
+
+                            <thead className="bg-slate-100">
+
+                                <tr>
+                                    <th className="p-4 text-left">
+                                        Order
+                                    </th>
+
+                                    <th className="p-4 text-left">
+                                        Customer
+                                    </th>
+
+                                    <th className="p-4 text-left">
+                                        Address
+                                    </th>
+
+                                    <th className="p-4 text-left">
+                                        Status
+                                    </th>
+
+                                    <th className="p-4 text-left">
+                                        ETA
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {orders.map((order) => (
+
+                                    <tr
+                                        key={order._id}
+                                        className="border-t hover:bg-slate-50 transition"
+                                    >
+
+                                        {/* Order */}
+
+                                        <td className="p-4 font-medium text-slate-800">
+                                            #{order._id?.slice(-6)}
+                                        </td>
+
+
+                                        {/* Customer */}
+
+                                        <td className="p-4">
+
+                                            <div className="font-medium text-slate-800">
+                                                {order.customer?.name ||
+                                                    "Unknown Customer"}
+                                            </div>
+
+                                            <div className="text-sm text-slate-500">
+                                                {order.customer?.email || ""}
+                                            </div>
+
+                                        </td>
+
+
+                                        {/* Address */}
+
+                                        <td className="p-4 text-slate-600">
+                                            {order.deliveryAddress ||
+                                                "Address unavailable"}
+                                        </td>
+
+
+                                        {/* Status */}
+
+                                        <td className="p-4">
+
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusStyle(
+                                                    order.orderStatus
+                                                )}`}
+                                            >
+                                                {order.orderStatus ||
+                                                    "Pending"}
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* ETA */}
+
+                                        <td className="p-4 text-slate-600">
+                                            {order.estimatedTime
+                                                ? `${order.estimatedTime} min`
+                                                : "N/A"}
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                )}
+
+            </div>
+
+        </div>
+    );
 }

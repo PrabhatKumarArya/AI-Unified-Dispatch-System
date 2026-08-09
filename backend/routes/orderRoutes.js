@@ -10,6 +10,7 @@ import {
   pickUpOrder,
   outForDelivery,
   deliverOrder,
+  getRiderEarnings,
 } from "../controllers/orderController.js";
 
 import { protect, authorize } from "../middleware/authMiddleware.js";
@@ -21,7 +22,11 @@ router.post("/", protect, authorize("customer"), createOrder);
 
 router.get("/", protect, getOrders);
 
+router.get("/earnings", protect, getRiderEarnings);
+
 router.get("/:id", protect, getOrderById);
+
+
 
 // Assign Rider
 router.put(
@@ -30,6 +35,7 @@ router.put(
   authorize("admin"),
   assignRider
 );
+
 
 // Only Admin can update status
 router.put(
@@ -74,5 +80,7 @@ router.put(
   authorize("rider"),
   deliverOrder
 );
+
+router.get("/:id", protect, getOrderById);
 
 export default router;

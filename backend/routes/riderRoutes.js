@@ -1,14 +1,30 @@
-import mongoose from "mongoose";
+import express from "express";
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+import {
+    getRiders,getRiderEarnings,
+} from "../controllers/riderController.js";
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
-};
 
-export default connectDB;
+import {
+    protect,
+    authorize,
+} from "../middleware/authMiddleware.js";
+
+
+const router = express.Router();
+
+
+router.get(
+    "/",
+    protect,
+    authorize("admin"),
+    getRiders
+);
+
+router.get(
+    "/earnings",
+    protect,
+    getRiderEarnings
+);
+
+export default router;
