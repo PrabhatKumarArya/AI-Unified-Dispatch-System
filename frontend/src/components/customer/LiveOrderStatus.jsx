@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaMotorcycle } from "react-icons/fa";
 
-const API = "http://localhost:5000/api/orders";
+import API_URL from "../../services/api"; 
+const API = `${API_URL}/orders`;
 
 export default function LiveOrderStatus() {
   const [orders, setOrders] = useState([]);

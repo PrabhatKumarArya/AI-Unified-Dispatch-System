@@ -7,7 +7,8 @@ import AIInsights from "../../components/admin/AIInsights";
 import RevenueChart from "../../components/admin/RevenueChart";
 import SystemAnalytics from "../../components/admin/SystemAnalytics";
 
-const API = "http://localhost:5000/api/orders";
+import API_URL from "../../services/api"; 
+const API = `${API_URL}/orders`;
 
 export default function AdminDashboard() {
 

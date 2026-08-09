@@ -8,7 +8,8 @@ import {
     FaTimes,
 } from "react-icons/fa";
 
-const API = "http://localhost:5000/api/ai/recommendations";
+import API_URL from "../../services/api"; 
+const API = `${API_URL}/ai/recommendations`;
 
 export default function AIRecommendation() {
     const [recommendations, setRecommendations] = useState([]);
@@ -16,23 +17,15 @@ export default function AIRecommendation() {
     const [error, setError] = useState("");
 
     // Stores the recommendation whose details are open
-    const [selectedRecommendation, setSelectedRecommendation] =
-        useState(null);
-
-    useEffect(() => {
-        fetchRecommendations();
-    }, []);
+    const [selectedRecommendation, setSelectedRecommendation] = useState(null);
+    useEffect(() => { fetchRecommendations();}, []);
 
     async function fetchRecommendations() {
         try {
             setLoading(true);
             setError("");
-
             const token = localStorage.getItem("token");
-
-            if (!token) {
-                throw new Error("Authentication token not found");
-            }
+            if (!token) { throw new Error("Authentication token not found");}
 
             const response = await fetch(API, {
                 method: "GET",

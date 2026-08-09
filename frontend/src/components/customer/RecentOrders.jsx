@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const API = "http://localhost:5000/api/orders";
+import API_URL from "../../services/api"; 
+const API = `${API_URL}/orders`;
 
 export default function RecentOrders() {
   const [orders, setOrders] = useState([]);

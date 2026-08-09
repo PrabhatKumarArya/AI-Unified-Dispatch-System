@@ -8,7 +8,8 @@ import {
     FaSyncAlt,
 } from "react-icons/fa";
 
-const API = "http://localhost:5000/api/orders";
+import API_URL from "../../services/api"; 
+const API = `${API_URL}/orders`;
 
 export default function RiderMap() {
     const [orders, setOrders] = useState([]);

@@ -1,5 +1,5 @@
-const API = "http://localhost:5000/api/orders";
-
+import API_URL from "./api"; 
+const API = `${API_URL}/orders`;
 const getToken = () => localStorage.getItem("token");
 
 export const getOrders = async () => {

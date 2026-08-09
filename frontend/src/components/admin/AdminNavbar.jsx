@@ -1,35 +1,12 @@
 import { useEffect, useState } from "react";
-
-import {
-    FaBell,
-    FaSearch,
-    FaUserCircle,
-    FaExclamationTriangle,
-    FaMotorcycle,
-    FaBox,
-    FaCheckCircle,
-} from "react-icons/fa";
-
-import {
-    getNotifications,
-    markNotificationRead,
-} from "../../services/notificationService";
-
+import { FaBell, FaSearch, FaUserCircle, FaExclamationTriangle, FaMotorcycle, FaBox, FaCheckCircle,} from "react-icons/fa";
+import { getNotifications, markNotificationRead,} from "../../services/notificationService";
 
 export default function AdminNavbar() {
-
     const [user, setUser] = useState(null);
-
-    const [notifications, setNotifications] =
-        useState([]);
-
-    const [showNotifications, setShowNotifications] =
-        useState(false);
-
-    const [loadingNotifications, setLoadingNotifications] =
-        useState(false);
-
-
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [loadingNotifications, setLoadingNotifications] = useState(false);
     const [today, setToday] = useState(
         new Date().toLocaleDateString("en-IN", {
             weekday: "long",
@@ -38,173 +15,65 @@ export default function AdminNavbar() {
             year: "numeric",
         })
     );
-
-
     // Load admin + notifications
     useEffect(() => {
-
         loadUser();
-
         fetchNotifications();
-
         // Refresh notifications every 10 seconds
-        const notificationInterval =
-            setInterval(() => {
-                fetchNotifications();
-            }, 10000);
-
-
+        const notificationInterval =setInterval(() => {fetchNotifications();}, 10000);
         // Update date
-        const dateInterval =
-            setInterval(() => {
-
-                setToday(
-                    new Date().toLocaleDateString(
+        const dateInterval = setInterval(() => {setToday(new Date().toLocaleDateString(
                         "en-IN",
                         {
                             weekday: "long",
                             day: "numeric",
                             month: "long",
                             year: "numeric",
-                        }
-                    )
-                );
-
-            }, 60000);
-
-
+                        }));
+        }, 60000);
         return () => {
-
-            clearInterval(
-                notificationInterval
-            );
-
+            clearInterval(notificationInterval);
             clearInterval(dateInterval);
-
         };
-
     }, []);
-
-
     // Load logged-in admin
     function loadUser() {
-
         try {
-
-            const storedUser =
-                localStorage.getItem("user");
-
-            if (!storedUser) {
-                setUser(null);
-                return;
-            }
-
-            setUser(
-                JSON.parse(storedUser)
-            );
-
+            const storedUser = localStorage.getItem("user");
+            if (!storedUser) { setUser(null);return;}
+            setUser(JSON.parse(storedUser));
         } catch (error) {
-
-            console.error(
-                "Failed to load user:",
-                error
-            );
-
+            console.error("Failed to load user:",error);
             setUser(null);
         }
     }
-
-
     // Fetch live notifications
     async function fetchNotifications() {
-
         try {
-
             setLoadingNotifications(true);
-
-            const data =
-                await getNotifications();
-
-            console.log(
-                "Notifications:",
-                data
-            );
-
-            setNotifications(
-                Array.isArray(
-                    data.notifications
-                )
-                    ? data.notifications
-                    : []
-            );
-
+            const data = await getNotifications();
+            console.log("Notifications:",data);
+            setNotifications(Array.isArray(data.notifications) ? data.notifications: []);
         } catch (error) {
-
-            console.error(
-                "Notification Fetch Error:",
-                error
-            );
-
+            console.error("Notification Fetch Error:",error);
         } finally {
-
             setLoadingNotifications(false);
-
         }
     }
-
-
     // Handle notification click
-    async function handleNotificationClick(
-        notification
-    ) {
-
+    async function handleNotificationClick(notification) {
         try {
-
             if (!notification.isRead) {
-
-                await markNotificationRead(
-                    notification._id
-                );
-
-                setNotifications(
-                    (prev) =>
-                        prev.map((item) =>
-                            item._id ===
-                            notification._id
-                                ? {
-                                      ...item,
-                                      isRead: true,
-                                  }
-                                : item
-                        )
-                );
+                await markNotificationRead(notification._id);
+                setNotifications((prev) => prev.map((item) => item._id === notification._id ? { ...item, isRead: true, } : item ));
             }
-
         } catch (error) {
-
-            console.error(
-                "Read notification error:",
-                error
-            );
-
+            console.error("Read notification error:",error);
         }
     }
-
-
-    const unreadCount =
-        notifications.filter(
-            (notification) =>
-                !notification.isRead
-        ).length;
-
-
-    const adminName =
-        user?.name || "Admin";
-
-    const adminRole =
-        user?.role || "Administrator";
-
-
+    const unreadCount = notifications.filter((notification) => !notification.isRead).length;
+    const adminName = user?.name || "Admin";
+    const adminRole = user?.role || "Administrator";
     // Notification icon
     function getNotificationIcon(type) {
 
